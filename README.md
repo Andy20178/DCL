@@ -1,4 +1,4 @@
-# 🚀 Source Code for Robust Disentangled Counterfactual Learning for Physical Commonsense Reasoning (NeurIPS 2023) 🧠
+# 🚀 Source Code for Disentangled Counterfactual Learning for Physical Commonsense Reasoning (NeurIPS 2023) 🧠
 
 Welcome to the official repository for our NeurIPS 2023 paper! This README will guide you through setting up and running our experiments. Let's dive in! 🚀
 
