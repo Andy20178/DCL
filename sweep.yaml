@@ -1,0 +1,11 @@
+program: train_1.py     # 训练脚本
+method: grid                   # 搜索方法
+metric:                             # 优化指标
+  name: test/acc
+  goal: maximize
+parameters:                     # 参数边界，超参空间
+  lr:            
+    min: 0.00001
+    max: 0.1
+  optimizer:
+    values: ["adam", "sgd"]
