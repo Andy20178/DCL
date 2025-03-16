@@ -20,15 +20,6 @@ class GradReverse(Function):
 class TransVAE(nn.Module):
     def __init__(self, opt):
         super(TransVAE, self).__init__()
-        # self.f_dim = opt.f_dim
-        # self.z_dim = opt.z_dim
-        # self.fc_dim = opt.fc_dim
-        # self.frames = opt.num_segments
-        # self.frame_aggregation = opt.frame_aggregation
-        # self.batch_size = opt.batch_size
-        # self.dropout_rate = opt.dropout_rate
-        # self.prior_sample = opt.prior_sample #ramdom
-        #临时做实验写死的参数，后续要改
         self.f_dim = 256
         self.z_dim = 256 #dimensionality of z_t
         self.fc_dim = 512
@@ -79,19 +70,19 @@ class TransVAE(nn.Module):
         self.feat_aggregated_dim = self.z_dim * 2
     
     def encode_and_sample_post(self, x):
-        #输入的是视频帧或者视频帧的特征
-        conv_x = self.encoder_frame(x)#[batchsize,frames,512]
-        lstm_out, _ = self.z_lstm(conv_x)#输入lstm中编码
+        
+        conv_x = self.encoder_frame(x)  # [batchsize, frames, 512]
+        lstm_out, _ = self.z_lstm(conv_x)  # Input encoded into LSTM
         backward = lstm_out[:, 0, self.hidden_dim:2 * self.hidden_dim]
         frontal = lstm_out[:, self.frames - 1, 0:self.hidden_dim]
         lstm_out_f = torch.cat((frontal, backward), dim=1)
-        f_mean = self.f_mean(lstm_out_f)#由编码的结果获得
-        f_logvar = self.f_logvar(lstm_out_f)#由编码的结果获得
-        f_post = self.reparameterize(f_mean, f_logvar, random_sampling=False)#重参数化获得静态信息的先验
+        f_mean = self.f_mean(lstm_out_f)  # Obtained from the encoded results
+        f_logvar = self.f_logvar(lstm_out_f)  # Obtained from the encoded results
+        f_post = self.reparameterize(f_mean, f_logvar, random_sampling=False)  # Reparameterization to obtain the prior of static information
         features, _ = self.z_rnn(lstm_out)
         z_mean = self.z_mean(features)
         z_logvar = self.z_logvar(features)
-        z_post = self.reparameterize(z_mean, z_logvar, random_sampling=False)#获得动态信息的先验
+        z_post = self.reparameterize(z_mean, z_logvar, random_sampling=False)  # Obtain the prior of dynamic information
         return f_mean, f_logvar, f_post, z_mean, z_logvar, z_post
     
     def decoder_frame(self,zf):
@@ -117,13 +108,6 @@ class TransVAE(nn.Module):
         return recon_x
 
     def encoder_frame(self, x):
-        # if self.input_type == 'image':
-        #     x_shape = x.shape
-        #     x = x.view(-1, x_shape[-3], x_shape[-2], x_shape[-1])
-        #     x_embed = self.encoder(x)[0]           
-        #     return x_embed.view(x_shape[0], x_shape[1], -1)
-        # if self.input_type == 'feature':
-        #将视频帧编码后输出，不融合，[batchsize,frames,512]
         x_embed = self.enc_fc_layer1(x)
         num_frames = x_embed.size()[1]
         x_embed = self.bn_enc_layer1(x_embed.view(-1, self.fc_output_dim))
@@ -198,7 +182,7 @@ class TransVAE(nn.Module):
         return z_means, z_logvars, z_out
 
     def forward(self, x):
-        #开始改
+        
         f_mean, f_logvar, f_post, z_mean_post, z_logvar_post, z_post = self.encode_and_sample_post(x)
         if self.prior_sample == 'random':
             z_mean_prior, z_logvar_prior, z_prior = self.sample_z(z_post.size(0),random_sampling=False)
@@ -206,18 +190,16 @@ class TransVAE(nn.Module):
             z_mean_prior, z_logvar_prior, z_prior = self.sample_z_prior_train(z_post, random_sampling=False)
         f_expand = f_post.unsqueeze(1).expand(-1, self.frames, self.f_dim)
         zf = torch.cat((z_post, f_expand), dim=2)
-        #重建X的特征
+        
         recon_x = self.decoder_frame(zf)
         
-        # z_post_feat = z_post.view(-1, z_post.size()[-1])
-        # z_post_feat = self.dropout_f(z_post_feat)
         self.bilstm.flatten_parameters()
         z_post_video_feat, _ = self.bilstm(z_post)
         backward = z_post_video_feat[:, 0, self.z_dim:2 * self.z_dim]
         frontal = z_post_video_feat[:, self.frames - 1, 0:self.z_dim]
         z_post_video_feat = torch.cat((frontal, backward), dim=1)
         z_post_video_feat = self.en_video_feat(z_post_video_feat)
-        z_post_video_feat = self.dropout_v(z_post_video_feat)#将video的feature融合，变为512
+        z_post_video_feat = self.dropout_v(z_post_video_feat)
 
         
         return f_mean, f_logvar, f_post, z_mean_post, z_logvar_post, z_post, z_mean_prior, z_logvar_prior, z_prior, recon_x, z_post_video_feat

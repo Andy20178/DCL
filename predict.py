@@ -141,7 +141,7 @@ audio_transform = transforms.Compose([
         ])
 
 similarities = defaultdict(dict)
-#加载数据集
+
 q_transform = None
 test_dataset = PACSImageAudioDataset(args.data_dir, "test_data", img_transform=img_transform, q_transform=q_transform, audio_transform=audio_transform, extra_imgs=True, loss_fn=args.loss_fn)
 test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True, num_workers=8, drop_last=False)

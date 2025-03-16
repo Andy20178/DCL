@@ -60,7 +60,7 @@ class PACSImageAudioDataset(Dataset):
             video_frames[i] = video_frame
         return video_frames
     def _load_label(self, sample_label):
-        #读取json文件
+        
         label_dict = json.load(open("/data/lcs/PACS_data/json/label_dict.json"))
         label = label_dict[sample_label]
         return label

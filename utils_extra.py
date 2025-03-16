@@ -20,9 +20,7 @@ def get_logger(filename=None):
     return logger
 
 def load_model(MODEL_PATH, device="cuda", args=None):
-    '''
-    加载模型, 其中包括PACSImageAudioCLIP的实例化, 但还包括其他内容
-    '''
+    
     model = torch.jit.load(MODEL_PATH, map_location="cpu")#
     model = build_model(model.state_dict(),args = args).to(device)#
 
@@ -168,8 +166,8 @@ def compute_acc_loss(output, target, args, loss_dict, feature_dict):
     '''
     if args.loss_fn == "CrossEntropy":
         loss_fn = torch.nn.CrossEntropyLoss()
-        pred = torch.softmax(output, dim=1)#这一步放在GPU上
-        preds = (pred.argmax(dim=1) ).cpu()#这一步放在CPU上
+        pred = torch.softmax(output, dim=1)
+        preds = (pred.argmax(dim=1) ).cpu()
         correct = (preds == target).sum().item()
         loss_classification = loss_fn(output, target)
     elif args.loss_fn == "Triplet":
@@ -181,5 +179,4 @@ def compute_acc_loss(output, target, args, loss_dict, feature_dict):
     loss = loss_classification + loss_dict['loss_1_VAE'] + loss_dict['loss_2_VAE']
     if args.miss_modal != "None" and args.use_modal_share:
         loss += loss_dict['obj1_spec_video_loss'] + loss_dict['obj2_spec_video_loss'] + loss_dict['obj1_spec_audio_loss'] + loss_dict['obj2_spec_audio_loss'] + loss_dict['obj1_share_loss'] + loss_dict['obj2_share_loss']
-    #TODO 模态缺失的时候要加模态缺失的损失，目前还没加
     return loss, correct

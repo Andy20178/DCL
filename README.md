@@ -1,10 +1,17 @@
 # 🚀 Source Code for Disentangled Counterfactual Learning for Physical Commonsense Reasoning (NeurIPS 2023) 🧠
 
-Welcome to the official repository for our NeurIPS 2023 paper! This README will guide you through setting up and running our experiments. Let's dive in! 🚀
+Welcome to the official repository for our NeurIPS 2023 paper! This README will guide you through the setup and execution of our experiments. Let's get started! 🚀
+
+📄 **Paper**: [Disentangled Counterfactual Learning for Physical Commonsense Reasoning](https://arxiv.org/pdf/2310.19559)
+
+📅 **Update (February 17, 2025)**: We are excited to announce the release of our extended version, **Robust Disentangled Counterfactual Learning for Physical Audiovisual Commonsense Reasoning (RDCL)**, now available on arXiv. In this version, we explore scenarios involving missing modalities and introduce a new dataset based on VLM descriptions of visual information for each object.
+
+📄 **Extended Paper**: [Robust Disentangled Counterfactual Learning for Physical Audiovisual Commonsense Reasoning](https://arxiv.org/pdf/2502.12345)  
+📦 **Dataset**: [Baidu Netdisk](https://pan.baidu.com/s/1Ei76NNkb1CFt8FJkDJDFMg) (Extraction Code: `v458`)
 
 ## 📥 Downloading Model Weights
 
-First, you need to download the pretrained CLIP and AudioCLIP weights.
+To begin, you will need to download the pretrained weights for CLIP and AudioCLIP.
 
 ### CLIP
 ```bash
@@ -12,20 +19,20 @@ wget https://openaipublic.azureedge.net/clip/models/5806e77cd80f8b59890b7e101eab
 ```
 
 ### AudioCLIP
-Download `AudioCLIP-Partial-Training.py` and `bpe_simple_vocab_16e6.txt.gz` from [AudioCLIP Releases](https://github.com/AndreyGuzhov/AudioCLIP/releases).
+Download `AudioCLIP-Partial-Training.py` and `bpe_simple_vocab_16e6.txt.gz` from the [AudioCLIP Releases](https://github.com/AndreyGuzhov/AudioCLIP/releases).
 
-Once downloaded, place the models into the `assets` folder.
+After downloading, place the models into the `assets` folder.
 
 ## 🛠️ Requirements
 
-We use the following setup:
+We recommend the following setup:
 - **Python**: 3.8.10
 - **PyTorch**: 1.11.0
 - **CUDA**: 11.3
 
 ## 🏋️‍♂️ Training
 
-There are two models that can be trained:
+For our NeurIPS 2023 paper, the training and testing processes are as follows:
 
 ### 1. PACS Dataset
 ```bash
@@ -38,6 +45,19 @@ python3 train_1.py
 python3 train_classify.py
 ```
 
+For our arXiv 2025 paper, the training and testing processes are as follows:
+
+### 1. PACS Dataset
+```bash
+conda activate PACS
+python3 train_1.py --miss_modal audio 
+```
+
+### 2. Material Classification Dataset
+```bash
+python3 train_classify.py --miss_modal audio 
+```
+
 ## 🔮 Prediction
 
 Once a model has been trained, you can generate predicted outputs on the test set:
@@ -48,11 +68,11 @@ python3 predict.py -model_path PATH_TO_MODEL_WEIGHTS -split test
 
 ## 🙏 Acknowledgements
 
-This code was adapted from:
+This code is adapted from:
 - [AudioCLIP](https://github.com/AndreyGuzhov/AudioCLIP)
 - [PACS](https://github.com/samuelyu2002/PACS)
 
-We would like to thank Andrey Guzhov, Samuel Yu, and all other contributors of these repositories for their valuable work. 🙌
+We would like to express our gratitude to Andrey Guzhov, Samuel Yu, and all other contributors of these repositories for their invaluable work. 🙌
 
 ---
 
