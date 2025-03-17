@@ -6,7 +6,7 @@ Welcome to the official repository for our NeurIPS 2023 paper! This README will 
 
 📅 **Update (February 17, 2025)**: We are excited to announce the release of our extended version, **Robust Disentangled Counterfactual Learning for Physical Audiovisual Commonsense Reasoning (RDCL)**, now available on arXiv. In this version, we explore scenarios involving missing modalities and introduce a new dataset based on VLM descriptions of visual information for each object.
 
-📄 **Extended Paper**: [Robust Disentangled Counterfactual Learning for Physical Audiovisual Commonsense Reasoning](https://arxiv.org/pdf/2502.12345)  
+📄 **Extended Paper**: [Robust Disentangled Counterfactual Learning for Physical Audiovisual Commonsense Reasoning](https://arxiv.org/pdf/2502.12425)  
 📦 **Dataset**: [Baidu Netdisk](https://pan.baidu.com/s/1Ei76NNkb1CFt8FJkDJDFMg) (Extraction Code: `v458`)
 
 ## 📥 Downloading Model Weights
