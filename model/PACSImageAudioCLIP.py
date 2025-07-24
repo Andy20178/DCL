@@ -33,7 +33,7 @@ class PACSImageAudioCLIP(nn.Module):
                  args = None
                  ):
         super().__init__()
-        
+        self.sim_type = args.sim_type
         self.context_length = context_length
         self.dropout = dropout
         if isinstance(vision_layers, (tuple, list)):
@@ -251,11 +251,11 @@ class PACSImageAudioCLIP(nn.Module):
             v2_static_feature = feature_dict['v2_static_feature']
             all_features = torch.cat([v1_static_feature,v2_static_feature])#[batch_size*2, 256]
             all_features = self.v_to_prior_dis_static(all_features)
-            v1_static_feature, v2_static_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False)
+            v1_static_feature, v2_static_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False, sim_type=self.sim_type)
             feature_dict['v1_static_feature'] = v1_static_feature
             feature_dict['v2_static_feature'] = v2_static_feature
             if self.use_counterfactual:
-                v1_static_feature_intervened, v2_static_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True)
+                v1_static_feature_intervened, v2_static_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True, sim_type=self.sim_type)
                 feature_dict['v1_static_feature_intervened'] = v1_static_feature_intervened
                 feature_dict['v2_static_feature_intervened'] = v2_static_feature_intervened
         if self.use_dynamic_knowledge:
@@ -264,11 +264,11 @@ class PACSImageAudioCLIP(nn.Module):
             v2_dynamic_feature = feature_dict['v2_dynamic_feature']
             all_features = torch.cat([v1_dynamic_feature,v2_dynamic_feature])
             all_features = self.v_to_prior_dis_dynamic(all_features)
-            v1_dynamic_feature, v2_dynamic_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False)
+            v1_dynamic_feature, v2_dynamic_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False, sim_type=self.sim_type)
             feature_dict['v1_dynamic_feature'] = v1_dynamic_feature
             feature_dict['v2_dynamic_feature'] = v2_dynamic_feature
             if self.use_counterfactual:
-                v1_dynamic_feature_intervened, v2_dynamic_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True)
+                v1_dynamic_feature_intervened, v2_dynamic_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True, sim_type=self.sim_type)
                 feature_dict['v1_dynamic_feature_intervened'] = v1_dynamic_feature_intervened
                 feature_dict['v2_dynamic_feature_intervened'] = v2_dynamic_feature_intervened
         if self.use_audio_knowledge:
@@ -276,11 +276,11 @@ class PACSImageAudioCLIP(nn.Module):
             audio2_feature = feature_dict['audio2_features']
             all_features = torch.cat([audio1_feature,audio2_feature])
             all_features = self.v_to_prior_dis_audio(all_features)
-            audio1_feature, audio2_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False)
+            audio1_feature, audio2_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False, sim_type=self.sim_type)
             feature_dict['audio1_feature'] = audio1_feature
             feature_dict['audio2_feature'] = audio2_feature
             if self.use_counterfactual:
-                audio1_feature_intervened, audio2_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True)
+                audio1_feature_intervened, audio2_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True, sim_type=self.sim_type)
                 feature_dict['audio1_feature_intervened'] = audio1_feature_intervened
                 feature_dict['audio2_feature_intervened'] = audio2_feature_intervened
         if self.use_image_knowledge:
@@ -288,11 +288,11 @@ class PACSImageAudioCLIP(nn.Module):
             image2_feature = feature_dict['image2_features']
             all_features = torch.cat([image1_feature,image2_feature])
             all_features = self.v_to_prior_dis_image(all_features)
-            image1_feature, image2_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False)
+            image1_feature, image2_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False, sim_type=self.sim_type)
             feature_dict['image1_feature'] = image1_feature
             feature_dict['image2_feature'] = image2_feature
             if self.use_counterfactual:
-                image1_feature_intervened, image2_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True)
+                image1_feature_intervened, image2_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True, sim_type=self.sim_type)
                 feature_dict['image1_feature_intervened'] = image1_feature_intervened
                 feature_dict['image2_feature_intervened'] = image2_feature_intervened
         if self.use_video_knowledge:
@@ -300,11 +300,11 @@ class PACSImageAudioCLIP(nn.Module):
             video2_feature = feature_dict['video2_features']
             all_features = torch.cat([video1_feature,video2_feature])
             all_features = self.v_to_prior_dis_video(all_features)
-            video1_feature, video2_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False)
+            video1_feature, video2_feature = knowledge_caluate(self, all_features, batch_size, use_intervened=False, sim_type=self.sim_type)
             feature_dict['video1_feature'] = video1_feature
             feature_dict['video2_feature'] = video2_feature
             if self.use_counterfactual:
-                video1_feature_intervened, video2_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True)
+                video1_feature_intervened, video2_feature_intervened = knowledge_caluate(self, all_features, batch_size, use_intervened=True, sim_type=self.sim_type)
                 feature_dict['video1_feature_intervened'] = video1_feature_intervened
                 feature_dict['video2_feature_intervened'] = video2_feature_intervened
         return feature_dict

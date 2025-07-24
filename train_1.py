@@ -34,7 +34,7 @@ add train params
 '''
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--data_dir', default="/data/lcs/PACS_data", type=str)#Need to be changed
+parser.add_argument('--data_dir', default="PACS_data", type=str)#Need to be changed
 parser.add_argument('--save_path', default="results", type=str)
 parser.add_argument('--model_filename', default='AudioCLIP-Partial-Training.pt', type=str)
 
@@ -123,9 +123,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger = get_logger(LOGGER_FILENAME)  # Start a logger
 
 # Load the model, including video and audio
-model = load_model("/home/lcs/T-PAMI2024_DCL/AudioCLIP/assets/ViT-B-16.pt", device, args=args)  # Load the ViT model
+model = load_model("assets/ViT-B-16.pt", device, args=args)  # Load the ViT model
 logger.info("ViT Model loaded")
-audio_model = AudioCLIPFinetune(pretrained=f'/home/lcs/T-PAMI2024_DCL/AudioCLIP/assets/{args.model_filename}')
+audio_model = AudioCLIPFinetune(pretrained=f'assets/{args.model_filename}')
 for param in audio_model.parameters():  # No need to fine-tune
     param.requires_grad = False
 model.audio_model = audio_model.audio 

@@ -237,13 +237,28 @@ class VisionTransformer(nn.Module):
 
         return x
 
-def knowledge_caluate(self, all_features, batch_size, use_intervened):
-    all_norm = F.normalize(all_features)
-    localPriors = all_norm.mm(all_norm.t())#得到[batch,batch]的相似度矩阵
+def knowledge_caluate(self, all_features, batch_size, use_intervened, sim_type):
+    if sim_type == 'cosine':
+        all_norm = F.normalize(all_features)
+        localPriors = all_norm.mm(all_norm.t())
+    elif sim_type == 'euclidean':
+        a = all_features.unsqueeze(1)
+        b = all_features.unsqueeze(0)
+        dist = torch.norm(a - b, dim=2)
+        localPriors = -dist
+    elif sim_type == 'manhattan':
+        a = all_features.unsqueeze(1)
+        b = all_features.unsqueeze(0)
+        dist = torch.abs(a - b).sum(dim=2)
+        localPriors = -dist
+        # import pdb; pdb.set_trace()
+    # all_norm = F.normalize(all_features)
+    # localPriors = all_norm.mm(all_norm.t())#得到[batch,batch]的相似度矩阵
     if use_intervened:
         localPriors_intervened = torch.randn_like(localPriors)
         localPriors = localPriors + localPriors_intervened
-    localPriors = torch.exp(localPriors)
+    if sim_type == 'cosine':
+        localPriors = torch.exp(localPriors)
     localPriors = torch.div(localPriors, self.tao_video)#按照公式，参考论文：https://arxiv.org/pdf/2208.00967.pdf，公式3
     top_k = self.top_k
     top_values, top_indices = torch.topk(localPriors, k=top_k, dim=1)

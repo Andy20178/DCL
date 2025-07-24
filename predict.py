@@ -17,7 +17,7 @@ from dataset.dataset import PACSImageAudioDataset
 parser = argparse.ArgumentParser(description='predict on audioclip')
 parser.add_argument(
         '--model_path',
-        default="/home/lcs/PACS-lcs/original/experiments/AudioCLIP/logs/9/model_audioclip_9_39.pt",
+        default="AudioCLIP/logs/9/model_audioclip_9_39.pt",
         type=str,
         help='Model path'
     )
@@ -38,7 +38,7 @@ parser.add_argument(
 
 parser.add_argument(
         '--data_dir',
-        default="/data/lcs/PACS_data",
+        default="PACS_data",
         type=str,
         help='which split to predict'
     )
